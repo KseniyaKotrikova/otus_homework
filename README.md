@@ -3,4 +3,4 @@
 
 Котрикова Ксения
 
-ksenia.kotrikova@gmail.com# otus_homework
+ksenia.kotrikova@gmail.com
