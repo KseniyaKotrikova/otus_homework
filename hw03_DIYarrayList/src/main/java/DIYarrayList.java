@@ -2,15 +2,13 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-public class DIYarrayList<T> implements List {
+public class DIYarrayList <T>  implements List <T> {
     public static final int MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
     protected transient int modCount = 0;
     private static final Object[] emptyDefaultData = {};
     private static final Object[] defaultCapacityData = {};
     private static int defaultCapacity = 20;
-    private static int size;
-    ArrayList<Integer> arrayList = new ArrayList<>();
-
+    private int size;
     private Object [] data;
 
     public DIYarrayList(int initialCapacity) {
@@ -28,7 +26,7 @@ public class DIYarrayList<T> implements List {
     }
     @Override
     public int size() {
-        return this.size;
+        return size;
     }
 
     @Override
@@ -37,31 +35,34 @@ public class DIYarrayList<T> implements List {
     }
 
     @Override
-    public void replaceAll(UnaryOperator operator) {
+    public void replaceAll(UnaryOperator<T> operator) {
         throw new UnsupportedOperationException("Such operation is not supported.");
     }
 
     @Override
-    public void sort(Comparator c) {
-        throw new UnsupportedOperationException("Such operation is not supported.");
+    public void sort(Comparator<? super T> c) {
+        List.super.sort(c);
     }
 
     @Override
     public boolean contains(Object o) {
-        return indexOf(0) >= 0;
+        return indexOf(o) >= 0;
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<T> iterator() {
         throw new UnsupportedOperationException("Such operation is not supported.");
     }
 
     @Override
-    public Object[] toArray() {
-        return Arrays.copyOf(data, size);
+    public T[] toArray() {
+        return (T[]) Arrays.copyOf(data, size);
     }
 
 
+    public void copy(List <T> dest, List <T> src){
+        Collections.copy(dest,src);
+    }
     @Override
     public Object[] toArray(Object[] a) {
         if (a.length < size)
@@ -83,22 +84,8 @@ public class DIYarrayList<T> implements List {
             throw new IndexOutOfBoundsException("No such element in DIYarrayList on index: " +index);
     }
 
-    public void add(int index, Object element) {
-        rangeCheckForAdd(index);
-        modCount++;
-        final int s;
-        Object[] elementData;
-        if ((s = size) == (elementData = this.data).length)
-            elementData = grow();
-        System.arraycopy(elementData, index,
-                elementData, index + 1,
-                s - index);
-        data[index] = element;
-        size = s + 1;
-    }
-
     @SuppressWarnings("unchecked")
-    public void add(Object e, Object[] elementData, int s) {
+    private void add(Object e, Object[] elementData, int s) {
         if (s == elementData.length)
             elementData = grow();
         elementData[s] = (T)e;
@@ -140,7 +127,7 @@ public class DIYarrayList<T> implements List {
     }
 
     @Override
-    public void forEach(Consumer action) {
+    public void forEach(Consumer<? super T> action) {
         Objects.requireNonNull(action);
         final int expectedModCount = modCount;
         @SuppressWarnings("unchecked")
@@ -178,14 +165,12 @@ public class DIYarrayList<T> implements List {
 
     private Object[] grow(int minCapacity) {
         int oldCapacity = data.length;
-        System.out.println(oldCapacity);
         if (oldCapacity > 0 || data != defaultCapacityData) {
             int newCapacity = newLength(oldCapacity,
                     minCapacity - oldCapacity, /* minimum growth */
                     oldCapacity >> 1           /* preferred growth */);
             return data = Arrays.copyOf(data, newCapacity);
         } else {
-            System.out.println(minCapacity + " "+ oldCapacity+ " "+ defaultCapacity);
             return data = new Object[Math.max(defaultCapacity, minCapacity)];
         }
     }
@@ -219,13 +204,13 @@ public class DIYarrayList<T> implements List {
     }
 
     @Override
-    public boolean addAll(Collection c) {
-        throw new UnsupportedOperationException("Such operation is not supported.");
+    public boolean addAll(Collection<? extends T> c) {
+        return Collections.addAll(c);
     }
 
     @Override
-    public boolean addAll(int index, Collection c) {
-        throw new UnsupportedOperationException("Such operation is not supported.");
+    public boolean addAll(int index, Collection<? extends T> c) {
+        return Collections.addAll(c);
     }
 
     @Override
@@ -250,8 +235,8 @@ public class DIYarrayList<T> implements List {
     }
 
     @Override
-    public Object get(int index) {
-        return data[index] ;
+    public T get(int index) {
+        return (T) data[index] ;
     }
 
     @Override
@@ -260,6 +245,20 @@ public class DIYarrayList<T> implements List {
         return element;
     }
 
+    @Override
+    public void add(int index, T element) {
+        rangeCheckForAdd(index);
+        modCount++;
+        final int s;
+        Object[] elementData;
+        if ((s = size) == (elementData = this.data).length)
+            elementData = grow();
+        System.arraycopy(elementData, index,
+                elementData, index + 1,
+                s - index);
+        data[index] = element;
+        size = s + 1;
+    }
     @Override
     public int indexOf(Object o) {
         return indexOfRange(o,0, size);
@@ -299,36 +298,352 @@ public class DIYarrayList<T> implements List {
 
     public int lastIndexOf() {
         int i;
-        if (this == null) {
-            for (i = size - 1; i >= 0; i--)
-                if (data[i] == null)
-                    return i;
-        } else {
-            for ( i = size - 1; i >= 0; i--)
+            for ( i = size - 1; i >= 0; i--){
                 if (this.get(i).equals(data[i])) {
                     return i;
                 }
-        }
+            }
         return i;
     }
 
     @Override
-    public ListIterator listIterator() {
+    public ListIterator<T> listIterator(final int index) {
+        rangeCheckForAdd(index);
+        return (ListIterator<T>) new ListItr(index);
+    }
+
+    @Override
+    public ListIterator<T> listIterator() {
+        return (ListIterator<T>) new ListItr(0);
+    }
+
+
+    @Override
+    public List<T> subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException("Such operation is not supported.");
     }
 
     @Override
-    public ListIterator listIterator(int index) {
+    public Spliterator<T> spliterator() {
         throw new UnsupportedOperationException("Such operation is not supported.");
     }
 
-    @Override
-    public List subList(int fromIndex, int toIndex) {
-        throw new UnsupportedOperationException("Such operation is not supported.");
+    private class SubList extends AbstractList<T> implements RandomAccess {
+        private final AbstractList<T> parent;
+        private final int parentOffset;
+        private final int offset;
+        int size;
+
+        SubList(AbstractList<T> parent,
+                int offset, int fromIndex, int toIndex) {
+            this.parent = parent;
+            this.parentOffset = fromIndex;
+            this.offset = offset + fromIndex;
+            this.size = toIndex - fromIndex;
+            this.modCount = DIYarrayList.this.modCount;
+        }
+
+        public T set(int index,T e) {
+            rangeCheck(index);
+            checkForComodification();
+            T oldValue = DIYarrayList.this.data(offset + index);
+            DIYarrayList.this.data[offset + index] = e;
+            return oldValue;
+        }
+
+        public T get(int index) {
+            rangeCheck(index);
+            checkForComodification();
+            return DIYarrayList.this.data(offset + index);
+        }
+
+        public int size() {
+            checkForComodification();
+            return this.size;
+        }
+
+        public Iterator<T> iterator() {
+            return listIterator();
+        }
+
+        public ListIterator<T> listIterator(final int index) {
+            checkForComodification();
+            rangeCheckForAdd(index);
+            final int offset = this.offset;
+
+            return new ListIterator<T>() {
+                int cursor = index;
+                int lastRet = -1;
+                int expectedModCount = DIYarrayList.this.modCount;
+
+                public boolean hasNext() {
+                    return cursor != SubList.this.size;
+                }
+
+                @SuppressWarnings("unchecked")
+                public T next() {
+                    checkForComodification();
+                    int i = cursor;
+                    if (i >= SubList.this.size)
+                        throw new NoSuchElementException();
+                    Object[] elementData = DIYarrayList.this.data;
+                    if (offset + i >= elementData.length)
+                        throw new ConcurrentModificationException();
+                    cursor = i + 1;
+                    return (T) elementData[offset + (lastRet = i)];
+                }
+
+                public boolean hasPrevious() {
+                    return cursor != 0;
+                }
+
+                @SuppressWarnings("unchecked")
+                public T previous() {
+                    checkForComodification();
+                    int i = cursor - 1;
+                    if (i < 0)
+                        throw new NoSuchElementException();
+                    Object[] elementData = DIYarrayList.this.data;
+                    if (offset + i >= elementData.length)
+                        throw new ConcurrentModificationException();
+                    cursor = i;
+                    return (T) elementData[offset + (lastRet = i)];
+                }
+
+                @SuppressWarnings("unchecked")
+                public void forEachRemaining(Consumer<? super T> consumer) {
+                    Objects.requireNonNull(consumer);
+                    final int size = SubList.this.size;
+                    int i = cursor;
+                    if (i >= size) {
+                        return;
+                    }
+                    final Object[] elementData = DIYarrayList.this.data;
+                    if (offset + i >= elementData.length) {
+                        throw new ConcurrentModificationException();
+                    }
+                    while (i != size && modCount == expectedModCount) {
+                        consumer.accept((T) elementData[offset + (i++)]);
+                    }
+                    // update once at end of iteration to reduce heap write traffic
+                    lastRet = cursor = i;
+                    checkForComodification();
+                }
+
+                public int nextIndex() {
+                    return cursor;
+                }
+
+                public int previousIndex() {
+                    return cursor - 1;
+                }
+
+                public void remove() {
+                    if (lastRet < 0)
+                        throw new IllegalStateException();
+                    checkForComodification();
+
+                    try {
+                        SubList.this.remove(lastRet);
+                        cursor = lastRet;
+                        lastRet = -1;
+                        expectedModCount = DIYarrayList.this.modCount;
+                    } catch (IndexOutOfBoundsException ex) {
+                        throw new ConcurrentModificationException();
+                    }
+                }
+
+                public void set(T e) {
+                    if (lastRet < 0)
+                        throw new IllegalStateException();
+                    checkForComodification();
+
+                    try {
+                        DIYarrayList.this.set(offset + lastRet, e);
+                    } catch (IndexOutOfBoundsException ex) {
+                        throw new ConcurrentModificationException();
+                    }
+                }
+
+                public void add(T e) {
+                    checkForComodification();
+
+                    try {
+                        int i = cursor;
+                        SubList.this.add(i, e);
+                        cursor = i + 1;
+                        lastRet = -1;
+                        expectedModCount = DIYarrayList.this.modCount;
+                    } catch (IndexOutOfBoundsException ex) {
+                        throw new ConcurrentModificationException();
+                    }
+                }
+
+                final void checkForComodification() {
+                    if (expectedModCount !=DIYarrayList.this.modCount)
+                        throw new ConcurrentModificationException();
+                }
+            };
+        }
+
+        void subListRangeCheck(int fromIndex, int toIndex, int size) {
+            if (fromIndex < 0)
+                throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+            if (toIndex > size)
+                throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+            if (fromIndex > toIndex)
+                throw new IllegalArgumentException("fromIndex(" + fromIndex +
+                        ") > toIndex(" + toIndex + ")");
+        }
+
+        public List<T> subList(int fromIndex, int toIndex) {
+            subListRangeCheck(fromIndex, toIndex, size);
+            return new SubList(this, offset, fromIndex, toIndex);
+        }
+
+        private void rangeCheck(int index) {
+            if (index < 0 || index >= this.size)
+                throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        }
+
+        private void rangeCheckForAdd(int index) {
+            if (index < 0 || index > this.size)
+                throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        }
+
+        private String outOfBoundsMsg(int index) {
+            return "Index: "+index+", Size: "+this.size;
+        }
+
+        private void checkForComodification() {
+            if (DIYarrayList.this.modCount != this.modCount)
+                throw new ConcurrentModificationException();
+        }
     }
 
-    @Override
-    public Spliterator spliterator() {
-        throw new UnsupportedOperationException("Such operation is not supported.");
+    static <T> T elementAt(Object[] es, int index) {
+        return (T) es[index];
+    }
+
+    private class Itr implements Iterator<T> {
+        int cursor;       // index of next element to return
+        int lastRet = -1; // index of last element returned; -1 if no such
+        int expectedModCount = modCount;
+
+        // prevent creating a synthetic constructor
+        Itr() {}
+
+        public boolean hasNext() {
+            return cursor != size;
+        }
+
+        @SuppressWarnings("unchecked")
+        public T next() {
+            checkForComodification();
+            int i = cursor;
+            if (i >= size)
+                throw new NoSuchElementException();
+            Object[] elementData = DIYarrayList.this.data;
+            if (i >= elementData.length)
+                throw new ConcurrentModificationException();
+            cursor = i + 1;
+            return (T) elementData[lastRet = i];
+        }
+
+        public void remove() {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+            checkForComodification();
+
+            try {
+                DIYarrayList.this.remove(lastRet);
+                cursor = lastRet;
+                lastRet = -1;
+                expectedModCount = modCount;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super T> action) {
+            Objects.requireNonNull(action);
+            final int size = DIYarrayList.this.size;
+            int i = cursor;
+            if (i < size) {
+                final Object[] es = data;
+                if (i >= es.length)
+                    throw new ConcurrentModificationException();
+                for (; i < size && modCount == expectedModCount; i++)
+                    action.accept(elementAt(es, i));
+                // update once at end to reduce heap write traffic
+                cursor = i;
+                lastRet = i - 1;
+                checkForComodification();
+            }
+        }
+
+        final void checkForComodification() {
+            if (modCount != expectedModCount)
+                throw new ConcurrentModificationException();
+        }
+    }
+
+    private class ListItr extends Itr implements ListIterator<T> {
+        ListItr(int index) {
+            super();
+            cursor = index;
+        }
+
+        public boolean hasPrevious() {
+            return cursor != 0;
+        }
+
+        public int nextIndex() {
+            return cursor;
+        }
+
+        public int previousIndex() {
+            return cursor - 1;
+        }
+
+        @SuppressWarnings("unchecked")
+        public T previous() {
+            checkForComodification();
+            int i = cursor - 1;
+            if (i < 0)
+                throw new NoSuchElementException();
+            Object[] elementData = DIYarrayList.this.data;
+            if (i >= elementData.length)
+                throw new ConcurrentModificationException();
+            cursor = i;
+            return (T) elementData[lastRet = i];
+        }
+        @Override
+        public void set(T e) {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+            checkForComodification();
+
+            try {
+                DIYarrayList.this.set(lastRet, e);
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        public void add(T e) {
+            checkForComodification();
+
+            try {
+                int i = cursor;
+                DIYarrayList.this.add(i, e);
+                cursor = i + 1;
+                lastRet = -1;
+                expectedModCount = modCount;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
     }
 }

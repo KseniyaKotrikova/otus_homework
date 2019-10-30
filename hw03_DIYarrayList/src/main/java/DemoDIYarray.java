@@ -1,22 +1,23 @@
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class DemoDIYarray {
     public static void main(String[] args) {
-        DIYarrayList diyArrayList = new DIYarrayList();
-        System.out.println(diyArrayList.size());
-        diyArrayList.add(0, new DIYarrayList<>());
+        DIYarrayList <Integer> diy1 = new DIYarrayList<>(20);
+        DIYarrayList diy2 = new DIYarrayList<>(20);
+        List list = new DIYarrayList();
+        ArrayList a =new ArrayList();
 
         for (int i = 0; i < 30; i++) {
             Random random = new Random();
-            diyArrayList.add(random.nextInt());
+            diy1.add(random.nextInt());
+            diy2.add(random.nextInt());
+
         }
-        System.out.println(diyArrayList.isEmpty());
-        diyArrayList.add(19, "some element");
-        System.out.println(diyArrayList.data(19));
-        diyArrayList.set(20,"la-la-la");
-        diyArrayList.forEach((o)-> System.out.println(o));
-        System.out.println(diyArrayList.lastIndexOf());
-        diyArrayList.clear();
+
+        diy2.addAll(diy1);
+        Collections.addAll(diy2,diy2.lastIndexOf());
+        Collections.copy(diy2,diy1);
+        Collections.sort(diy2);
+        diy2.forEach((o)-> System.out.println(o));
     }
 }

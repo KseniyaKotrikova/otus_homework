@@ -3,13 +3,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
+        <groupId>ru.otus</groupId>
         <artifactId>otus_java_2019_09</artifactId>
-        <groupId>otus_java_2019_09</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hw01-maven</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <java.version>13</java.version>
+
+    </properties>
+    <artifactId>hw01maven</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -30,9 +34,9 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <archive>
-                        <manifest>
-                            <mainClass>HelloOtus</mainClass>
-                        </manifest>
+                            <manifest>
+                                <mainClass>ru.otus.HelloOtus</mainClass>
+                            </manifest>
                     </archive>
                 </configuration>
                 <executions>
