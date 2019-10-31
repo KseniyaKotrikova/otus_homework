@@ -2,26 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>ru.otus</groupId>
+        <artifactId>otus_java_2019_09</artifactId>
+        <version>${revision}</version>
+    </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>ru.otus</groupId>
-    <artifactId>otus_java_2019_09</artifactId>
-    <version>${revision}</version>
-    <modules>
-        <module>hw01maven</module>
-        <module>hw03_DIYarrayList</module>
-    </modules>
+    <properties>
+        <java.version>13</java.version>
 
-<properties>
-    <!-- region general -->
-    <java.version>13</java.version>
-    <maven.compiler.source>13</maven.compiler.source>
-    <maven.compiler.target>13</maven.compiler.target>
-    <revision>2019-09-SNAPSHOT</revision>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <!--endregion-->
-</properties>
+    </properties>
+    <artifactId>hw01maven</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -29,7 +21,7 @@
             <version>28.1-jre</version>
         </dependency>
     </dependencies>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <build>
         <finalName>${project.name}</finalName>
 
@@ -41,6 +33,11 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <archive>
+                            <manifest>
+                                <mainClass>ru.otus.HelloOtus</mainClass>
+                            </manifest>
+                    </archive>
                 </configuration>
                 <executions>
                     <execution>
@@ -54,5 +51,6 @@
             </plugin>
         </plugins>
     </build>
-</project>
 
+
+</project>
