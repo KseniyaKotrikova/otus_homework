@@ -2,22 +2,66 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>otus_java_2019_09</artifactId>
-        <groupId>otus_java_2019_09</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hw01-maven</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>ru.otus</groupId>
+    <artifactId>otus_java_2019_09</artifactId>
+    <version>${revision}</version>
+
+    <modules>
+        <module>hw01maven</module>
+        <module>hw03_DIYarrayList</module>
+
+        <module>hw06_annotations</module>
+    </modules>
+
+<properties>
+    <!-- region general -->
+    <java.version>13</java.version>
+    <maven.compiler.source>13</maven.compiler.source>
+    <maven.compiler.target>13</maven.compiler.target>
+    <revision>2019-09-SNAPSHOT</revision>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <lombok.version>1.18.10</lombok.version>
+    <junit-jupiter.version>5.3.2</junit-jupiter.version>
+    <assertj.version>3.13.2</assertj.version>
+
+    <!--endregion-->
+</properties>
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>28.1-jre</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fitbur.testify.junit/junit-core -->
+        <dependency>
+            <groupId>com.fitbur.testify.junit</groupId>
+            <artifactId>junit-core</artifactId>
+            <version>0.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <build>
         <finalName>${project.name}</finalName>
 
@@ -29,11 +73,6 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>HelloOtus</mainClass>
-                        </manifest>
-                    </archive>
                 </configuration>
                 <executions>
                     <execution>
@@ -47,6 +86,5 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
+
